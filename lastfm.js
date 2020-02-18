@@ -52,9 +52,9 @@ class Album {
 }
 
 // Add each user's albums to list
-userList.forEach(function(entry) {
-  addUserAlbums(entry);
-});
+for (i = 0; i < userList.length; i++) {
+  addUserAlbums(userList[i]);
+}
 
 // Sort list into toplist
 function sort() {
