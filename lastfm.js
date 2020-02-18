@@ -21,11 +21,12 @@ function addUserAlbums(username) {
           currentAlbum.scrobbles = data.topalbums.album[i].playcount;
           // Check if album exists already
           if (topAlbums.length != 0) {
-            topAlbums.forEach(function(entry) {
-              if (entry.name == currentAlbum.name) {
-                duplicate = true;
-              }
-            });
+            for (n = 0; n < topAlbums.length; n++) {
+                if (topAlbums[n].name == currentAlbum.name) {
+                    duplicate = true;
+                    topAlbums[n].scrobbles = parseInt(topAlbums[n].scrobbles) + parseInt(currentAlbum.scrobbles);
+                  }
+            }
           }
           // If not, add it to list
           if (!duplicate) {
