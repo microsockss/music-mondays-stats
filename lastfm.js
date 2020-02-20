@@ -19,13 +19,17 @@ function addUserAlbums(username) {
           var currentAlbum = new Album();
           currentAlbum.name = data.topalbums.album[i].name;
           currentAlbum.scrobbles = data.topalbums.album[i].playcount;
+          currentAlbum.listeners = 1;
           // Check if album exists already
           if (topAlbums.length != 0) {
             for (n = 0; n < topAlbums.length; n++) {
-                if (topAlbums[n].name == currentAlbum.name) {
-                    duplicate = true;
-                    topAlbums[n].scrobbles = parseInt(topAlbums[n].scrobbles) + parseInt(currentAlbum.scrobbles);
-                  }
+              if (topAlbums[n].name == currentAlbum.name) {
+                duplicate = true;
+                topAlbums[n].scrobbles =
+                  parseInt(topAlbums[n].scrobbles) +
+                  parseInt(currentAlbum.scrobbles);
+                topAlbums[n].listeners++;
+              }
             }
           }
           // If not, add it to list
@@ -35,19 +39,19 @@ function addUserAlbums(username) {
         }
         usersParsed++;
         if (usersParsed == userList.length) {
-            sort();
+          sort();
         }
       },
-      error: function(code, message) {
-      }
+      error: function(code, message) {}
     }
   );
 }
 
 class Album {
-  constructor(name, scrobbles) {
+  constructor(name, scrobbles, listeners) {
     this.name = name;
     this.scrobbles = scrobbles;
+    this.listeners = listeners;
   }
 }
 
@@ -58,18 +62,24 @@ for (i = 0; i < userList.length; i++) {
 
 // Sort list into toplist
 function sort() {
-    topAlbums.sort(function(a, b) {
-        return b.scrobbles - a.scrobbles;
-    });
-    output();
+  topAlbums.sort(function(a, b) {
+    return b.scrobbles - a.scrobbles;
+  });
+  // Also remove albums with less than 2 listeners
+  for (i = 0; i < topAlbums.length; i++) {
+    if (topAlbums[i].listeners < 2) {
+      topAlbums.splice(i, 1);
+    }
+  }
+  output();
 }
 
 // Output toplist to html
 function output() {
-    for (i = 0; i < 10; i++) {
-        var nameElement = document.getElementById((i + 1).toString());
-        nameElement.innerHTML = topAlbums[i].name;
-        var scrobbleElement = document.getElementById((i + 1).toString() + - 2);
-        scrobbleElement.innerHTML = topAlbums[i].scrobbles;
-      }      
+  for (i = 0; i < 10; i++) {
+    var nameElement = document.getElementById((i + 1).toString());
+    nameElement.innerHTML = topAlbums[i].name;
+    var scrobbleElement = document.getElementById((i + 1).toString() + -2);
+    scrobbleElement.innerHTML = topAlbums[i].scrobbles;
+  }
 }
